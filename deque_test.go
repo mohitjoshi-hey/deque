@@ -87,6 +87,73 @@ func TestFrontBack(t *testing.T) {
 	}
 }
 
+func TestTryMethods(t *testing.T) {
+	t.Run("empty", func(t *testing.T) {
+		var q Deque[int]
+		if value, ok := q.TryPopFront(); ok || value != 0 {
+			t.Errorf("TryPopFront() = (%d, %t), want (0, false)", value, ok)
+		}
+		if value, ok := q.TryPopBack(); ok || value != 0 {
+			t.Errorf("TryPopBack() = (%d, %t), want (0, false)", value, ok)
+		}
+		if value, ok := q.TryFront(); ok || value != 0 {
+			t.Errorf("TryFront() = (%d, %t), want (0, false)", value, ok)
+		}
+		if value, ok := q.TryBack(); ok || value != 0 {
+			t.Errorf("TryBack() = (%d, %t), want (0, false)", value, ok)
+		}
+
+		var nilDeque *Deque[int]
+		if value, ok := nilDeque.TryPopFront(); ok || value != 0 {
+			t.Errorf("nil TryPopFront() = (%d, %t), want (0, false)", value, ok)
+		}
+	})
+
+	t.Run("non-empty", func(t *testing.T) {
+		var q Deque[string]
+		q.PushBack("front")
+		q.PushBack("back")
+
+		if value, ok := q.TryFront(); !ok || value != "front" {
+			t.Errorf("TryFront() = (%q, %t), want (front, true)", value, ok)
+		}
+		if value, ok := q.TryBack(); !ok || value != "back" {
+			t.Errorf("TryBack() = (%q, %t), want (back, true)", value, ok)
+		}
+		if q.Len() != 2 {
+			t.Fatalf("Len() after peeks = %d, want 2", q.Len())
+		}
+		if value, ok := q.TryPopFront(); !ok || value != "front" {
+			t.Errorf("TryPopFront() = (%q, %t), want (front, true)", value, ok)
+		}
+		if value, ok := q.TryPopBack(); !ok || value != "back" {
+			t.Errorf("TryPopBack() = (%q, %t), want (back, true)", value, ok)
+		}
+		if q.Len() != 0 {
+			t.Errorf("Len() after pops = %d, want 0", q.Len())
+		}
+	})
+
+	t.Run("single element", func(t *testing.T) {
+		var q Deque[int]
+		q.PushBack(42)
+		if value, ok := q.TryPopBack(); !ok || value != 42 {
+			t.Errorf("TryPopBack() = (%d, %t), want (42, true)", value, ok)
+		}
+		if q.Len() != 0 {
+			t.Errorf("Len() after TryPopBack() = %d, want 0", q.Len())
+		}
+
+		q.PushFront(24)
+		if value, ok := q.TryPopFront(); !ok || value != 24 {
+			t.Errorf("TryPopFront() = (%d, %t), want (24, true)", value, ok)
+		}
+		if q.Len() != 0 {
+			t.Errorf("Len() after TryPopFront() = %d, want 0", q.Len())
+		}
+	})
+}
+
 func TestGrowShrinkBack(t *testing.T) {
 	var q Deque[int]
 	const size = minCapacity * 2

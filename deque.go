@@ -99,6 +99,16 @@ func (q *Deque[T]) PopFront() T {
 	return ret
 }
 
+// TryPopFront removes and returns the element from the front of the queue. If
+// the queue is empty, it returns the zero value and false.
+func (q *Deque[T]) TryPopFront() (T, bool) {
+	if q.Len() == 0 {
+		var zero T
+		return zero, false
+	}
+	return q.PopFront(), true
+}
+
 // IterPopFront returns an iterator that iteratively removes items from the
 // front of the deque. This is more efficient than removing items one at a time
 // because it avoids intermediate resizing. If a resize is necessary, only one
@@ -143,6 +153,16 @@ func (q *Deque[T]) PopBack() T {
 	return ret
 }
 
+// TryPopBack removes and returns the element from the back of the queue. If
+// the queue is empty, it returns the zero value and false.
+func (q *Deque[T]) TryPopBack() (T, bool) {
+	if q.Len() == 0 {
+		var zero T
+		return zero, false
+	}
+	return q.PopBack(), true
+}
+
 // IterPopBack returns an iterator that iteratively removes items from the back
 // of the deque. This is more efficient than removing items one at a time
 // because it avoids intermediate resizing. If a resize is necessary, only one
@@ -176,6 +196,16 @@ func (q *Deque[T]) Front() T {
 	return q.buf[q.head]
 }
 
+// TryFront returns the element at the front of the queue without removing it.
+// If the queue is empty, it returns the zero value and false.
+func (q *Deque[T]) TryFront() (T, bool) {
+	if q.Len() == 0 {
+		var zero T
+		return zero, false
+	}
+	return q.Front(), true
+}
+
 // Back returns the element at the back of the queue. This is the element that
 // would be returned by [PopBack]. This call panics if the queue is empty.
 func (q *Deque[T]) Back() T {
@@ -183,6 +213,16 @@ func (q *Deque[T]) Back() T {
 		panic("deque: Back() called when empty")
 	}
 	return q.buf[q.prev(q.tail)]
+}
+
+// TryBack returns the element at the back of the queue without removing it. If
+// the queue is empty, it returns the zero value and false.
+func (q *Deque[T]) TryBack() (T, bool) {
+	if q.Len() == 0 {
+		var zero T
+		return zero, false
+	}
+	return q.Back(), true
 }
 
 // At returns the element at index i in the queue without removing the element

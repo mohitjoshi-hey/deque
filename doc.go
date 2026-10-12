@@ -24,10 +24,10 @@ the application to provide, however the application chooses, if needed at all.
 
 Since it is OK for the deque to contain the zero-value of an item, it is
 necessary to either panic or return a second boolean value to indicate the
-deque is empty, when reading or removing an element. This deque panics when
-reading from an empty deque. This is a run-time check to help catch programming
-errors, which may be missed if a second return value is ignored. Simply check
-Deque.Len() before reading from the deque.
+deque is empty, when reading or removing an element. The [Front], [Back],
+[PopFront], and [PopBack] methods panic when the deque is empty. Use
+[Deque.TryFront], [Deque.TryBack], [Deque.TryPopFront], or [Deque.TryPopBack]
+to check for an empty deque with a boolean return value instead.
 
 # Generics
 
